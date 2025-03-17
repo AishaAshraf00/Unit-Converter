@@ -1,53 +1,72 @@
-import streamlit as st
-st.title("⏳Unit Converter App")
-st.markdown("### Converts Length,Weight And Time Instantly")
-st.write("Welcome! Select a category, enter a value and get the converted result in real-time")
+import streamlit as st 
 
+st.title("⏳Unit Converter")
+st.write("📌By Aisha Ashraf")
 
+unit_options = ["Length", "Weight", "Temperature"]
+unit = st.selectbox("Select Unit", unit_options)
 
-category = st.selectbox("Choose a category" , ["Length", "Weight", "Time"])
-def convert_units(category, value, unit):
-    if category == "Length":
-        if unit =="Kilometres to Miles":
-            return value * 0.621371
-        elif unit == "Miles to Kilometres":
-                return value / 0.621371
+if unit == "Length":
+    length_units = ["Meters", "Kilometers", "Feet", "Inches", "Centimeters"]
+    input_value = st.number_input("Enter Length Value:", min_value=0.0, format="%.2f")
+    from_unit = st.selectbox("From Unit", length_units)
+    to_unit = st.selectbox("To Unit", length_units)
 
-    elif category == "Weight":
-         if unit == "Kilograms to pounds":
-                return value * 2.20462
-    elif unit == "Pounds to kilograms":
-                return value / 2.20462
-    elif category == "Time":
-         if unit == "Seconds to minutes":
-                return value / 60
-    elif unit == "Minutes to seconds":
-                return value * 60
-    elif unit == "Minutes to hours":
-                return value / 60
-    elif unit == "Hours to minutes":
-                return value * 60
-    elif unit == "Hours to days":
-                return value / 24
-    elif unit =="Days to hours":
-                return value * 24
-    return 0
+    length_conversion = {
+        "Meters": 1,
+        "Kilometers": 1000,
+        "Feet": 0.3048,
+        "Inches": 0.0254,
+        "Centimeters": 0.01
+    }
 
-    if category =="Length":
-                unit = st.selection("📜 Select Conversation", ["Miles to Kilometres","Kilometres to Miles" ])
-    elif category =="Weight":
-                 unit = st.selectbox("🧵 Select Conversation" , ["Kilograms to pounds","Pounds to kilograms"])
+    if st.button("Convert"):
+        result = input_value * (length_conversion[from_unit] / length_conversion[to_unit])
+        st.success(f"{input_value} {from_unit} is equal to {result:.2f} {to_unit}")
 
-    elif category =="Time":
-                 unit =st.selectbox("⌚ Select Conservation" ,["Seconds to minutes", "Minutes to seconds", "Minutes to hours", "Hours to minutes","Hours to days", "Days to hours"])
+elif unit == "Weight":
+    weight_units = ["Kilograms", "Grams", "Pounds", "Ounces"]
+    input_value = st.number_input("Enter Weight Value:", min_value=0.0, format="%.2f")
+    from_unit = st.selectbox("From Unit", weight_units)
+    to_unit = st.selectbox("To Unit", weight_units)
 
-    value = st.number_input("Enter the value to convert")
-    value = st.button("Convert")
-    result = convert_units(category, value, unit)
-    st.success(f"The result is {result:.2f}")
+    weight_conversion = {
+        "Kilograms": 1,
+        "Grams": 0.001,
+        "Pounds": 0.453592,
+        "Ounces": 0.0283495
+    }
 
-                                                        
-                                                            
-                                    
+    if st.button("Convert"):
+        result = input_value * (weight_conversion[from_unit] / weight_conversion[to_unit])
+        st.success(f"{input_value} {from_unit} is equal to {result:.2f} {to_unit}")
 
+elif unit == "Temperature":
+    temperature_units = ["Celsius", "Fahrenheit", "Kelvin"]
+    input_value = st.number_input("Enter Temperature Value:", format="%.2f")
+    from_unit = st.selectbox("From Unit", temperature_units)
+    to_unit = st.selectbox("To Unit", temperature_units)
 
+    def convert_temperature(value, from_unit, to_unit):
+        if from_unit == to_unit:
+            return value
+        if from_unit == "Celsius":
+            if to_unit == "Fahrenheit":
+                return (value * 9/5) + 32
+            elif to_unit == "Kelvin":
+                return value + 273.15
+        elif from_unit == "Fahrenheit":
+            if to_unit == "Celsius":
+                return (value - 32) * 5/9
+            elif to_unit == "Kelvin":
+                return (value - 32) * 5/9 + 273.15
+        elif from_unit == "Kelvin":
+            if to_unit == "Celsius":
+                return value - 273.15
+            elif to_unit == "Fahrenheit":
+                return (value - 273.15) * 9/5 + 32
+        return None
+
+    if st.button("Convert"):
+        result = convert_temperature(input_value, from_unit, to_unit)
+        st.success(f"{input_value} {from_unit} is equal to {result:.2f} {to_unit}")
